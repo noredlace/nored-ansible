@@ -1,0 +1,37 @@
+---
+- hosts: 192.168.1.146
+  tasks:
+  - name: Install IIS
+    win_feature:
+      name: "Web-Server"
+      state: present
+      restart: yes
+      include_sub_features: yes
+      include_management_tools: yes
+  - name: Install Sprocket Web
+    ansible.windows.win_copy:
+      src: ~/nored-ansible/SprocketInstall/Web/
+      dest: D:\DematicCMMS\sprocket\
+  - name: Install Hangfire Web
+    ansible.windows.win_copy:
+      src: ~/nored-ansible/SprocketInstall/BackgroundJobService/
+      dest: D:\DematicIQ\BackgroundJobService_sprocket/
+ 
+
+- hosts: 192.168.1.107
+  tasks:
+  - name: Install DBATools Powershell Module Database
+    win_psmodule:
+      name: dbatools
+      accept_license: true
+      state: present
+
+  - name: Install Sprocket Database
+    lowlydba.sqlserver.restore:
+      sql_instance: sprocketdb
+      sql_username: sprocket
+      sql_password: Sprocket123!
+      database: sprocket
+      destination_data_directory: D:\Data\
+      destination_log_directory: D:\Logs\
+      path: ~/nored-ansible/SprocketInstall/DB/Install/      
