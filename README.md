@@ -12,6 +12,7 @@ As well as support Upgrades/SiteConfiguration Changes
 * Web Server
   * C and D Drives
   * WinRM.ps1 Scripts Ran for WinRM Listener
+  * [WinRM Setup](https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html#winrm-setup)
 
 * DB Server
   * C and D Drives
@@ -33,36 +34,37 @@ I expect this is automated on Deployment of VMs, but the only goal in this is to
 ```ansible-playbook -i hosts.yml setupSprocketWeb.yml``` 
 
 * Performs the following:
- * Installs IIS
- * Sets up preferred folder structure
- * addres entries in the HostFile 
+  * Installs IIS
+  * Sets up preferred folder structure
+  * adds entries in the HostFile 
 
 # Setup Sprocket DB Server
 ```ansible-playbook -i hosts.yml setupSprocketDB.yml``` 
 
 * Performs the following:
- * Sets up preferred folder structure
- * Installs SQLPackage
- * Add Firewall Inbound Rule for SQL Port 1433
- * Creates SQL Login
- * Set Default Directories of SQL Server
- * Enable TCP and NamedPipes on SQL Server
+  * Sets up preferred folder structure
+  * Installs SQLPackage
+  * Add Firewall Inbound Rule for SQL Port 1433
+  * Creates SQL Login
+  * Set Default Directories of SQL Server
+  * Enable TCP and NamedPipes on SQL Server
  
 # Install Sprocket Web Files
 ```ansible-playbook -i hosts.yml installSprocketWeb.yml``` 
 
 * Performs the following:
- * Copies the Sprocket Web Folder over
- * Copies the Sprocket Hangfire Folder over
- * Removes Default IIS Site/AppPool
- * Configures IIS Site Node's Web.Config for SQL Connection
+  * Copies the Sprocket Web Folder over
+  * Copies the Sprocket Hangfire Folder over
+  * Removes Default IIS Site/AppPool
+  * Creates IIS Site and App Pool for Sprocket
+  * Configures IIS Site Sprocket Web.Config for SQL Connection
 
 TODO: Configure Sprocket Hangfire exe.Config modifications. Install as Service
 
 # Install Sprocket DB Files
 ```ansible-playbook -i hosts.yml installSprocketDB.yml``` 
 * Performs the following:
- * Copies backup *.bak file over
- * Restores the backup to a Database
- * Update Table SiteConfigurations
+  * Copies backup *.bak file over
+  * Restores the backup to a Database
+  * Update Table SiteConfigurations
 
