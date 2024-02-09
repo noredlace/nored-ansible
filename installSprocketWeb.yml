@@ -1,5 +1,5 @@
 ---
-- hosts: 192.168.1.146
+- hosts: webserver01
   tasks:
   - name: Install IIS
     win_feature:
@@ -18,7 +18,7 @@
       dest: D:\DematicIQ\BackgroundJobService_sprocket/
  
 
-- hosts: 192.168.1.107
+- hosts: dbserver01
   tasks:
   - name: Install DBATools Powershell Module Database
     win_psmodule:
@@ -26,12 +26,28 @@
       accept_license: true
       state: present
 
-  - name: Install Sprocket Database
+  - name: Add Folder Data DB
+    ansible.windows.win_file:
+      path: D:\Data
+      state: directory
+
+  - name: Add Folder Logs DB
+    ansible.windows.win_file:
+      path: D:\Logs
+      state: directory
+
+  - name: Add Folder Backups DB
+    ansible.windows.win_file:
+      path: D:\Backups
+      state: directory
+
+#  - name: Install Sprocket Database (Create)
+#    lowlydba.sqlserver.database:
+#      sql_instance: SprocketDB
+#      database: sprocket
+
+  - name: Install Sprocket Database (Restore)
     lowlydba.sqlserver.restore:
-      sql_instance: sprocketdb
-      sql_username: sprocket
-      sql_password: Sprocket123!
+      sql_instance: SprocketDB
       database: sprocket
-      destination_data_directory: D:\Data\
-      destination_log_directory: D:\Logs\
-      path: ~/nored-ansible/SprocketInstall/DB/Install/      
+      path: ~/nored-ansible/SprocketInstall/DB/Install

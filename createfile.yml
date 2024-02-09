@@ -1,7 +1,11 @@
 ---
-- hosts: 192.168.1.146
+- hosts: dbserver01
   tasks:
   - name: create empty file
     ansible.windows.win_file:
-      path: C:\foo.conf
+      path: D:\foo.conf
       state: touch
+  - name: create empty folder
+    ansible.windows.win_file:
+      path: D:\folder
+      state: directory
