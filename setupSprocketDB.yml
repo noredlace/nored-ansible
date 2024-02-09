@@ -52,3 +52,49 @@
       protocol: tcp
       state: present
       enabled: yes
+
+
+  - name: Create sprocket SQL Login
+    ansible.windows.win_powershell:
+      script: |
+        New-DbaDBUser -SqlInstance SprocketDB -Login sprocket -Password Sprocket123!
+
+
+  - name: Set DB Data Default Path
+    ansible.windows.win_powershell:
+      script: |
+        Set-DbaDefaultPath -SqlInstance SprocketDB -Type Data -Path D:\Data
+
+  - name: Set DB Logs Default Path
+    ansible.windows.win_powershell:
+      script: |
+        Set-DbaDefaultPath -SqlInstance SprocketDB -Type Log -Path D:\Logs
+
+  - name: Set DB Backups Default Path
+    ansible.windows.win_powershell:
+      script: |
+        Set-DbaDefaultPath -SqlInstance SprocketDB -Type Backup -Path D:\Backups
+
+  - name: Enable TCP Sockets (SQL)
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQLServer\SuperSocketNetLib\Tcp
+      name: Enabled
+      data: 1
+      type: dword
+    tags: 
+    - mssql 
+
+  - name: Enable Named Pipes (SQL)
+    win_regedit:
+      path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQLServer\SuperSocketNetLib\Np
+      name: Enabled
+      data: 1
+      type: dword
+    tags:
+    - mssql
+
+  - name: Restart SQL Server 
+    ansible.windows.win_powershell:   
+      script: |
+        Restart-DbaService -ComputerName SprocketDB
+
