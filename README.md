@@ -8,13 +8,20 @@ Work can be done to further allow this to be variable
 As well as support Upgrades/SiteConfiguration Changes
 
 # PreRequirements
-Web and DB Server with C and D Drives
 
-DB Server Installed with .NET Framework 4.7.2 and SQL Server 2022. Configuration is made with Ansible
+* Web Server
+  * C and D Drives
+  * WinRM.ps1 Scripts Ran for WinRM Listener
 
-WinRM Scripts run to enable WinRM on both Web and DB Servers
+* DB Server
+  * C and D Drives
+  * .Net Framework 4.7.2
+  * SQL Server 2022
+  * SQL Server Studio Management 2019 
 
-Above is something to be expected to be automated on Deployment of VMs, but its not in scope with the goal of installing Sprocket
+Assumption is the above are the states that we will receive the Servers in. 
+
+I expect this is automated on Deployment of VMs, but the only goal in this is to deploy a Sprocket Website
 
 # Test Ping
 ```ansible all -i hosts.yml -m win_ping```
