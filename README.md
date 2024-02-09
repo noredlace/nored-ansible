@@ -9,9 +9,12 @@ As well as support Upgrades/SiteConfiguration Changes
 
 # PreRequirements
 Web and DB Server with C and D Drives
-DB Server Installed with SQL Server 2022. No further Configuration
+
+DB Server Installed with .NET Framework 4.7.2 and SQL Server 2022. Configuration is made with Ansible
 
 WinRM Scripts run to enable WinRM on both Web and DB Servers
+
+Above is something to be expected to be automated on Deployment of VMs, but its not in scope with the goal of installing Sprocket
 
 # Test Ping
 ```ansible all -i hosts.yml -m win_ping```
