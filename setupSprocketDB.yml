@@ -75,26 +75,21 @@
       script: |
         Set-DbaDefaultPath -SqlInstance SprocketDB -Type Backup -Path D:\Backups
 
-  - name: Enable TCP Sockets (SQL)
-    win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQLServer\SuperSocketNetLib\Tcp
-      name: Enabled
-      data: 1
-      type: dword
-    tags: 
-    - mssql 
-
-  - name: Enable Named Pipes (SQL)
-    win_regedit:
-      path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQLServer\SuperSocketNetLib\Np
-      name: Enabled
-      data: 1
-      type: dword
-    tags:
-    - mssql
-
   - name: Restart SQL Server 
     ansible.windows.win_powershell:   
       script: |
-        Restart-DbaService -ComputerName SprocketDB
+        # Pulled From https://learn.microsoft.com/en-us/sql/powershell/how-to-enable-tcp-sqlps?view=sql-server-ver16
+        [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.SqlServer.SqlWmiManagement')
+
+        $wmi = New-Object 'Microsoft.SqlServer.Management.Smo.Wmi.ManagedComputer' localhost
+
+        $tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Tcp']
+        $tcp.IsEnabled = $true  
+        $tcp.Alter()  
+
+        $tcp = $wmi.ServerInstances['MSSQLSERVER'].ServerProtocols['Np']
+        $tcp.IsEnabled = $true  
+        $tcp.Alter()  
+
+        Restart-Service -Name MSSQLSERVER -Force
 
