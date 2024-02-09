@@ -1,0 +1,14 @@
+---
+- hosts: dbserver01
+  tasks:
+
+#  - name: Install Sprocket Database (Create)
+#    lowlydba.sqlserver.database:
+#      sql_instance: SprocketDB
+#      database: sprocket
+
+  - name: Install Sprocket Database (Restore)
+    lowlydba.sqlserver.restore:
+      sql_instance: SprocketDB
+      database: sprocket
+      path: ~/nored-ansible/SprocketInstall/DB/Install

@@ -1,0 +1,5 @@
+---
+- import_playbook: setupSprocketWeb.yml
+- import_playbook: setupSprocketDB.yml
+- import_playbook: installSprocketWeb.yml
+- import_playbook: installSprocketDB.yml

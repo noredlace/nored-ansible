@@ -1,0 +1,23 @@
+---
+- hosts: dbserver01
+  tasks:
+  - name: Install DBATools Powershell Module Database
+    win_psmodule:
+      name: dbatools
+      accept_license: true
+      state: present
+
+  - name: Add Folder Data DB
+    ansible.windows.win_file:
+      path: D:\Data
+      state: directory
+
+  - name: Add Folder Logs DB
+    ansible.windows.win_file:
+      path: D:\Logs
+      state: directory
+
+  - name: Add Folder Backups DB
+    ansible.windows.win_file:
+      path: D:\Backups
+      state: directory
