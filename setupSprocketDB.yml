@@ -53,13 +53,6 @@
       state: present
       enabled: yes
 
-
-  - name: Create sprocket SQL Login
-    ansible.windows.win_powershell:
-      script: |
-        New-DbaDBUser -SqlInstance SprocketDB -Login sprocket -Password Sprocket123!
-
-
   - name: Set DB Data Default Path
     ansible.windows.win_powershell:
       script: |

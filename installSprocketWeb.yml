@@ -14,7 +14,12 @@
   - name: Create Sprocket IIS App Pool
     community.windows.win_iis_webapppool:
       name: sprocket
-      state: started 
+      state: started
+      attributes:
+        processModel.identityType: SpecificUser
+        processModel.userName: '{{ansible_user}}'
+        processModel.password: '{{ansible_password}}'
+        processModel.loadUserProfile: true 
 
   - name: Remove Default App Pool
     community.windows.win_iis_webapppool:
@@ -41,12 +46,15 @@
   - name: Configure IIS App Settings
     ansible.windows.win_powershell:
       script: |
+        Add-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings" -name "." -value @{key="EnableWindowsAuthentication";value="True"}
+        
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ServerName']" -name value -value 'sprocketdbserver'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DataBaseName']" -name value -value 'sprocket'
-        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBUserName']" -name value -value 'sprocket'
-        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBPassword']" -name value -value 'Sprocket123!'
-        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBUserName']" -name value -value 'sprocket'
-        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBPassword']" -name value -value 'Sprocket123!'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='SkipSprocketTimerRegistration']" -name value -value 'True'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='WebRoot']" -name value -value 'D:\DematicCMMS\sprocket'
+        
         Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='OverrideRootURL']"
+        Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBUserName']"
+        Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBPassword']"
+        Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBUserName']"
+        Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBPassword']"
