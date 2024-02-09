@@ -6,9 +6,21 @@
 #    lowlydba.sqlserver.database:
 #      sql_instance: SprocketDB
 #      database: sprocket
+#
+#  - name: Install Sprocket Database (Restore)
+#    lowlydba.sqlserver.restore:
+#      sql_instance: SprocketDB
+#      path: ~/nored-ansible/SprocketInstall/DB/Install/
+#      with_replace: true
 
-  - name: Install Sprocket Database (Restore)
-    lowlydba.sqlserver.restore:
-      sql_instance: SprocketDB
-      database: sprocket
-      path: ~/nored-ansible/SprocketInstall/DB/Install
+  - name: Install Sprocket DB Files
+    ansible.windows.win_copy:
+      src: ~/nored-ansible/SprocketInstall/DB/Install/
+      dest: D:\Backups\
+
+  - name: Install Sprocket Database (Restore) Powershell
+    ansible.windows.win_powershell:
+      script: |
+        Restore-DbaDatabase -SqlInstance SprocketDB -Path D:\Backups -Database sprocket
+
+

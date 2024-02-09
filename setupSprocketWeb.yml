@@ -8,3 +8,18 @@
       restart: yes
       include_sub_features: yes
       include_management_tools: yes
+
+  - name: Add D:\Temp (Web)
+    ansible.windows.win_copy:
+      src: ~/nored-ansible/SprocketInstall/Setup/rewrite_amd64_en-US.msi
+      dest: D:\DematicTemp\
+
+  - name: Install IIS Url Rewrite
+    win_package:
+      path: D:\DematicTemp\rewrite_amd64_en-US.msi
+      state: present
+
+  - name: Delete Temp Folder
+    ansible.windows.win_file:
+      path: D:\DematicTemp
+      state: absent

@@ -21,3 +21,5 @@
     ansible.windows.win_file:
       path: D:\Backups
       state: directory
+
+  - name: Copy 
