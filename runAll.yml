@@ -1,5 +1,16 @@
 ---
+
+- hosts: all
+  vars_prompt:
+    - name: ansible_user
+      prompt: What is the Ansible Username?
+      private: false
+
+    - name: ansible_password
+      prompt: What is the Ansible Password?
+      private: true
+
 - import_playbook: setupSprocketWeb.yml
 - import_playbook: setupSprocketDB.yml
-- import_playbook: installSprocketWeb.yml
+- import_playbook: installSprocketWeb.yml --extra-vars '{\"ansible_user\":\"{{ansible_user}}\", \"ansible_password\":\"{{ansible_password}}\"'
 - import_playbook: installSprocketDB.yml

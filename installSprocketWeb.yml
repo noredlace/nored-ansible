@@ -1,5 +1,14 @@
 ---
 - hosts: webserver01
+  vars_prompt:
+    - name: ansible_user
+      prompt: What is the App Pool Identity Username?
+      private: false
+
+    - name: ansible_password
+      prompt: What is the App Pool Identity Password?
+      private: true
+
   tasks:
   - name: Install Sprocket Web
     ansible.windows.win_copy:

@@ -38,7 +38,7 @@
           param(
             [string] $dataSource = ".\SQLEXPRESS",
             [string] $database = "MasterData",
-            [string] $sqlCommand = $(throw "Please specify a query."),
+            [string] $sqlCommand = $(throw "Please specify a query.")
           )
 
           $connectionString = "Data Source=$dataSource;Initial Catalog=$database;Integrated Security=True"
