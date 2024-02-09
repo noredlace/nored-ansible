@@ -23,3 +23,16 @@
     ansible.windows.win_file:
       path: D:\DematicTemp
       state: absent
+
+
+  - name: Add Host Entry DB
+    community.windows.win_hosts:
+      state: present
+      canonical_name: sprocketdbserver
+      ip_address: 192.168.1.107
+
+  - name: Add Host Entry Sprocket Site
+    community.windows.win_hosts:
+      state: present
+      canonical_name: sprocket.local
+      ip_address: 127.0.0.1

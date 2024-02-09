@@ -9,4 +9,44 @@
     ansible.windows.win_copy:
       src: ~/nored-ansible/SprocketInstall/BackgroundJobService/
       dest: D:\DematicIQ\BackgroundJobService_sprocket/
- 
+
+
+  - name: Create Sprocket IIS App Pool
+    community.windows.win_iis_webapppool:
+      name: sprocket
+      state: started 
+
+  - name: Remove Default App Pool
+    community.windows.win_iis_webapppool:
+      name: DefaultAppPool
+      state: absent
+
+  - name: Create Sprocket IIS Site
+    community.windows.win_iis_website:
+      name: sprocket
+      state: started
+      port: 80
+      ip: '*'
+      hostname: sprocket.local
+      application_pool: sprocket
+      physical_path: D:\DematicCMMS\sprocket
+    register: website
+
+
+  - name: Remove Default Website
+    community.windows.win_iis_website:
+      name: "Default Web Site"
+      state: absent
+
+  - name: Configure IIS App Settings
+    ansible.windows.win_powershell:
+      script: |
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ServerName']" -name value -value '192.168.1.107'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DataBaseName']" -name value -value 'sprocket'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBUserName']" -name value -value 'sprocket'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBPassword']" -name value -value 'Sprocket123!'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBUserName']" -name value -value 'sprocket'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ReadOnlyDBPassword']" -name value -value 'Sprocket123!'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='SkipSprocketTimerRegistration']" -name value -value 'True'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='WebRoot']" -name value -value 'D:\DematicCMMS\sprocket'
+        Clear-WebConfiguration -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='OverrideRootURL']"

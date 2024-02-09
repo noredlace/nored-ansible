@@ -23,4 +23,46 @@
       script: |
         Restore-DbaDatabase -SqlInstance SprocketDB -Path D:\Backups -Database sprocket
 
+#   - name: Install Sprocket Database (Restore) SqlPackage
+#     ansible.windows.win_powershell:
+#       script: |
+         
 
+  - name: Update Site Configurations
+    ansible.windows.win_powershell:
+      script: |
+        $datasource = "127.0.0.1"
+        $database = "sprocket"
+        $username="sprocket"
+        $password="Sprocket123!"
+
+        function Invoke-SQL {
+          param(
+            [string] $dataSource = ".\SQLEXPRESS",
+            [string] $database = "MasterData",
+            [string] $sqlCommand = $(throw "Please specify a query."),
+            [string] $username = $(throw "Username is required."),
+            [string] $password = $(throw "Password is required.")
+          )
+
+          $connectionString = "Data Source=$dataSource;Initial Catalog=$database;User ID=$username;Password=$password;"
+
+          $connection = new-object system.data.SqlClient.SQLConnection($connectionString)
+          $command = new-object system.data.sqlclient.sqlcommand($sqlCommand,$connection)
+          $connection.Open()
+
+          $adapter = New-Object System.Data.sqlclient.sqlDataAdapter $command
+          $dataset = New-Object System.Data.DataSet
+          $adapter.Fill($dataSet) | Out-Null
+
+          $connection.Close()
+          $dataSet.Tables
+        }
+
+        $updateSQL = @"
+        Update [dbo].[SiteConfiguration] set Value = 'http://sprocket.local' where Name in ('RootURL','SessionExpiredUrl')
+        Update [dbo].[SiteConfiguration] set Value = 'D:\DematicCMMS\sprocket\SavedFiles' where Name in ('SavedFilePath')
+        Update [dbo].[SiteConfiguration] set Value = 'D:\DematicCMMS\sprocket\tmp' where Name in ('MobileTempFilePath')
+        "@
+
+        Invoke-SQL -sqlCommand $updateSQL -dataSource $datasource -database $database -username $username -password $password

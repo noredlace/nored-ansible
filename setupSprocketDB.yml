@@ -22,4 +22,33 @@
       path: D:\Backups
       state: directory
 
-  - name: Copy 
+  - name: Copy SQL Package
+    ansible.windows.win_copy:
+      src: ~/nored-ansible/SprocketInstall/Setup/DacFramework.msi
+      dest: D:\DematicTemp\
+
+  - name: Install SQL Package
+    win_package:
+      path: D:\DematicTemp\DacFramework.msi
+      state: present
+
+  - name: Add SqlPackage to Path
+    ansible.windows.win_path:
+      elements:
+      - C:\Program Files\Microsoft SQL Server\160\DAC\bin\
+
+  - name: Delete Temp Folder
+    ansible.windows.win_file:
+      path: D:\DematicTemp
+      state: absent
+
+
+  - name: Firewall Rule to Allow Inbound SQL Port 1433
+    community.windows.win_firewall_rule:
+      name: SQL Port
+      localport: 1433
+      action: allow
+      direction: in
+      protocol: tcp
+      state: present
+      enabled: yes
