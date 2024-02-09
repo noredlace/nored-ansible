@@ -41,7 +41,7 @@
   - name: Configure IIS App Settings
     ansible.windows.win_powershell:
       script: |
-        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ServerName']" -name value -value '192.168.1.107'
+        Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='ServerName']" -name value -value 'sprocketdbserver'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DataBaseName']" -name value -value 'sprocket'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBUserName']" -name value -value 'sprocket'
         Set-WebConfigurationProperty -PSPath "IIS:\Sites\sprocket\" -filter "/appSettings/add[@key='DBPassword']" -name value -value 'Sprocket123!'
