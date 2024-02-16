@@ -10,7 +10,14 @@
       prompt: What is the Ansible Password?
       private: true
 
-- import_playbook: setupSprocketWeb.yml
-- import_playbook: setupSprocketDB.yml
-- import_playbook: installSprocketWeb.yml --extra-vars '{\"ansible_user\":\"{{ansible_user}}\", \"ansible_password\":\"{{ansible_password}}\"'
-- import_playbook: installSprocketDB.yml
+- name: Setup Sprocket Web
+  ansible.builtin.import_playbook: setupSprocketWeb.yml
+- name: Setup Sprocket DB
+  ansible.builtin.import_playbook: setupSprocketDB.yml
+- name: Install Sprocket Web
+  ansible.builtin.import_playbook: installSprocketWeb.yml 
+  vars:
+    ansible_user: ansible_user
+    ansible_password: ansible_password
+- name: Install Sprocket DB
+  ansible.builtin.import_playbook: installSprocketDB.yml
