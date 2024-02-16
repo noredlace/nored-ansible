@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  vars_prompt:
+    - name: ansible_user
+      prompt: What is the Ansible Username?
+      private: false
+
+    - name: ansible_password
+      prompt: What is the Ansible Password?
+      private: true
+
+- name: Install Sprocket Web Files
+  ansible.builtin.import_playbook: installSprocketWeb.yml 
+  vars:
+    ansible_user: ansible_user
+    ansible_password: ansible_password
+
+- name: Install Sprocket DB Files 
+  ansible.builtin.import_playbook: installSprocketDB.yml
+
